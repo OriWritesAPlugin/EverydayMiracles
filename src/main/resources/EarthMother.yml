@@ -1,0 +1,16 @@
+name: EverydayMiracles
+main: io.github.Oranitha.EverydayMiracles.EverydayMiracles
+version: 0.0.1
+author: Oranitha
+
+commands:
+  embrace:
+    description: This is a demo command.
+    usage: /<command>
+    permission: everydaymiracles.worship
+    permission-message: You can’t use this command, you don't have the permission <permission>!
+
+permissions:
+  everydaymiracles.worship:
+    description: Allows you to use basic features of EverydayMiracles, such as praying and   requesting miracles.
+    default: true
