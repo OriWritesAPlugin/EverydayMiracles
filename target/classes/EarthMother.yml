@@ -12,11 +12,18 @@ EarthMother:
   #Tag displayed before follower name.
   followers: Sapling
 
+  #What they say when a completed test is turned in.
+  quest complete:
+    A: Thank you, dear!
+    B: You’ve done a wonderful job.
+    C: Finished already? How delightful!
+    D: Fantastic!
+
   #Possible responses when followers use /edm chat. Left of the colon can be anything, as
   #long as it’s unique--letters are pretty easy.
   chatter:
     A: Hello, young one.
-    B: A pleasure as always, sapling.
+    B: A pleasure as always, child.
     C: So, dear, how does your garden grow?
     D: You look as bright and lovely as ever.
     E: Did you remember to water your flowers?
@@ -25,8 +32,14 @@ EarthMother:
     H: Oh, there you are!
 
   quests:
-    sneaky:
-      text: You can crouch to do something sneaky. Do something sneaky!
+    A:
+      text: Cardio break! Give me 10 Squats and an apple, dear!
+
+      #Must be one of https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html
       statistic: SNEAK_TIME
+
+      #Must be one of https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+      item: APPLE
       statAmount: 1
+      itemAmount: 1
       points: 10

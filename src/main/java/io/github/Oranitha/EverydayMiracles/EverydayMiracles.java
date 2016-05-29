@@ -52,9 +52,11 @@ public final class EverydayMiracles extends JavaPlugin{
     	if(label.equals("edm")){
     	if(args.length > 0){
     		if(args[0].equalsIgnoreCase("follow")) {Executor.follow(this, sender, args);}
-    		else if(args[0].equalsIgnoreCase("task")) {sender.sendMessage(this.getPlayerData().getString(sender.getName()+".deity"+" has no tasks for you right now..."));}
     		else if(args[0].equalsIgnoreCase("chat")) {Executor.chat(this,sender,args, dataHandler);}
-    		else if(args[0].equalsIgnoreCase("assist")) {Executor.assist(this,sender,args, dataHandler);
+    		else if(args[0].equalsIgnoreCase("quest")) {Executor.quest(this,sender,args, dataHandler);}
+    		else if(args[0].equalsIgnoreCase("enquire")) {Executor.enquire(this,sender,args, dataHandler);}
+    		else if(args[0].equalsIgnoreCase("submit")) {Executor.submit(this,sender,args, dataHandler);}
+    		else if(args[0].equalsIgnoreCase("points")) {Executor.points(this,sender);
     		} else {displayCommands(sender);}}
     	else { displayCommands(sender);}
         //getCommand("edm guidance").setExecutor(new CheckCommand());
@@ -87,7 +89,7 @@ public final class EverydayMiracles extends JavaPlugin{
 	    	   FileConfiguration deityFile = dataHandler.getDeity(deity);
 	    	   String chatColor=deityFile.getString(deity+".chatcolor");
 	    	   String followerNick = deityFile.getString(deity+".followers");
-	           p.setDisplayName(ChatColor.WHITE+"["+ChatColor.valueOf(chatColor)+followerNick+ChatColor.WHITE+"] "+p.getName());
+	           p.setDisplayName(ChatColor.WHITE+"["+ChatColor.valueOf(chatColor)+followerNick+ChatColor.WHITE+"] "+p.getDisplayName());
 	       }
     }
     
