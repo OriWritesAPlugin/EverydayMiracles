@@ -1,12 +1,32 @@
+#Please be aware that whitespace use is VERY important in this type of file! Make sure you
+#retain the number of spaces (i.e. chatter entries should always be 4 spaces from the margin.
+#Easiest way to keep it even is to copy-paste a different line!
+
+#Name
 EarthMother:
+
+  #Color for follower tags and certain announcements. Choose from 
+  #https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/ChatColor.html
   chatcolor: DARK_GREEN
+
+  #Tag displayed before follower name.
   followers: Sapling
+
+  #Possible responses when followers use /edm chat. Left of the colon can be anything, as
+  #long as it’s unique--letters are pretty easy.
   chatter:
-    A: “Hello, young one.”
-    B: “A pleasure as always, sapling.”
-    C: ”So, dear, how does your garden grow?”
-    D: ”You look as bright and lovely as ever.”
-    A: “Did you remember to water your flowers?”
-    B: “Everything alright?”
-    C: ”Nourish the fields with the bones of your enemies, love.”
-     ”Oh, there you are!”
+    A: Hello, young one.
+    B: A pleasure as always, sapling.
+    C: So, dear, how does your garden grow?
+    D: You look as bright and lovely as ever.
+    E: Did you remember to water your flowers?
+    F: Everything alright?
+    G: Nourish the fields with the bones of your enemies, love.
+    H: Oh, there you are!
+
+  quests:
+    sneaky:
+      text: You can crouch to do something sneaky. Do something sneaky!
+      statistic: SNEAK_TIME
+      statAmount: 1
+      points: 10

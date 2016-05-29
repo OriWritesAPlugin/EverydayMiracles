@@ -48,13 +48,12 @@ public final class DataHandler {
 			plugin.log("Creating player info for "+name);
 			FileConfiguration dataFile = plugin.getPlayerData();
 			dataFile.set(name, true);
-			//Null values exist for reference, will not show up in playerdata.yml
-			dataFile.set(name+".deity", null);
-			dataFile.set(name+".rank", null);
+			//Null values exist for reference.
+			//dataFile.set(name+".deity", null);
+			//dataFile.set(name+".rank", null);
 			dataFile.set(name+".points", 0);
-			dataFile.set(name+".questText", null);
-			dataFile.set(name+".questStat", null);
-			dataFile.set(name+".questTarget", 0);
+			//dataFile.set(name+".questText", null);
+			//dataFile.set(name+".questStat", null);
 			dataFile.set(name+".lastQuest", 0);
 			plugin.savePlayerData();
 		}

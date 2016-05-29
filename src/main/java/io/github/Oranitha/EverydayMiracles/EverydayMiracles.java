@@ -53,13 +53,13 @@ public final class EverydayMiracles extends JavaPlugin{
     	if(args.length > 0){
     		if(args[0].equalsIgnoreCase("follow")) {Executor.follow(this, sender, args);}
     		else if(args[0].equalsIgnoreCase("task")) {sender.sendMessage(this.getPlayerData().getString(sender.getName()+".deity"+" has no tasks for you right now..."));}
-    		else if(args[0].equalsIgnoreCase("chat")) {Executor.chat(this,sender,args, dataHandler);
+    		else if(args[0].equalsIgnoreCase("chat")) {Executor.chat(this,sender,args, dataHandler);}
+    		else if(args[0].equalsIgnoreCase("assist")) {Executor.assist(this,sender,args, dataHandler);
     		} else {displayCommands(sender);}}
     	else { displayCommands(sender);}
-        //getCommand("edm pray").setExecutor(new PrayCommand());
-        //getCommand("edm guidance").setExecutor(new GuidanceCommane());
-        //getCommand("edm check").setExecutor(new CheckCommand());
-        //getCommand("edm offer").setExecutor(new OfferCommand());
+        //getCommand("edm guidance").setExecutor(new CheckCommand());
+        //getCommand("edm reject").setExecutor(new OfferCommand());
+    	//getCommand("edm submit").setExecutor(new OfferCommand());
     	}
     	return true;
     }
