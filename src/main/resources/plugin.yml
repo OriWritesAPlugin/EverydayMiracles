@@ -4,8 +4,8 @@ version: 0.0.1
 author: Oranitha
 
 commands:
-  embrace:
-    description: This is a demo command.
+  edm:
+    description: This is the base command used for invoking EverydayMiracles commands.
     usage: /<command>
     permission: everydaymiracles.worship
     permission-message: You can’t use this command, you don't have the permission <permission>!
