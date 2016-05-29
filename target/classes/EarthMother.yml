@@ -1,7 +1,12 @@
 EarthMother:
   chatcolor: DARK_GREEN
   followers: Sapling
-  greetings:
+  chatter:
     A: “Hello, young one.”
     B: “A pleasure as always, sapling.”
     C: ”So, dear, how does your garden grow?”
+    D: ”You look as bright and lovely as ever.”
+    A: “Did you remember to water your flowers?”
+    B: “Everything alright?”
+    C: ”Nourish the fields with the bones of your enemies, love.”
+     ”Oh, there you are!”

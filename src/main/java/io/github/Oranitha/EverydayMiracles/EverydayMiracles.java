@@ -22,7 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class EverydayMiracles extends JavaPlugin{
 	
-	DataHandler datahandler;
+	DataHandler dataHandler;
 	private File configf, earthmotherf, playerdataf;
 	private FileConfiguration config, earthmother, playerdata;
 	//RenameListener's a private inner class, FYI.
@@ -33,7 +33,7 @@ public final class EverydayMiracles extends JavaPlugin{
 	public void onEnable(){
 		log("Loading and building...");
 		createFiles();
-		datahandler = new DataHandler(this);
+		dataHandler = new DataHandler(this);
 		log("Starting listener...");
 		renameListener = new RenameListener();
 		Bukkit.getServer().getPluginManager().registerEvents(renameListener, this);
@@ -52,7 +52,8 @@ public final class EverydayMiracles extends JavaPlugin{
     	if(label.equals("edm")){
     	if(args.length > 0){
     		if(args[0].equalsIgnoreCase("follow")) {Executor.follow(this, sender, args);}
-    		else if(args[0].equalsIgnoreCase("task")) {sender.sendMessage(this.getPlayerData().getString(sender.getName()+".deity"+" has no tasks for you right now..."));
+    		else if(args[0].equalsIgnoreCase("task")) {sender.sendMessage(this.getPlayerData().getString(sender.getName()+".deity"+" has no tasks for you right now..."));}
+    		else if(args[0].equalsIgnoreCase("chat")) {Executor.chat(this,sender,args, dataHandler);
     		} else {displayCommands(sender);}}
     	else { displayCommands(sender);}
         //getCommand("edm pray").setExecutor(new PrayCommand());
@@ -81,9 +82,9 @@ public final class EverydayMiracles extends JavaPlugin{
     }
     
     public void setNickname(Player p){
-	       String deity = datahandler.getPlayerDeity(p);
+	       String deity = dataHandler.getPlayerDeity(p);
 	       if (!(deity==null)){
-	    	   FileConfiguration deityFile = datahandler.getDeity(deity);
+	    	   FileConfiguration deityFile = dataHandler.getDeity(deity);
 	    	   String chatColor=deityFile.getString(deity+".chatcolor");
 	    	   String followerNick = deityFile.getString(deity+".followers");
 	           p.setDisplayName(ChatColor.WHITE+"["+ChatColor.valueOf(chatColor)+followerNick+ChatColor.WHITE+"] "+p.getName());
