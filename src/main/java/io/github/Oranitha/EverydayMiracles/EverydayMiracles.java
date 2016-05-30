@@ -34,7 +34,8 @@ public final class EverydayMiracles extends JavaPlugin{
 		log("Loading and building...");
 		createFiles();
 		dataHandler = new DataHandler(this);
-		log("Starting listener...");
+		log("Starting listeners...");
+		
 		renameListener = new RenameListener();
 		Bukkit.getServer().getPluginManager().registerEvents(renameListener, this);
 	}
@@ -48,7 +49,6 @@ public final class EverydayMiracles extends JavaPlugin{
     @Override
     public boolean onCommand(CommandSender sender, Command command,
                              String label, String[] args) {
-    	//TODO: Fix shitfit if console calls command
     	if(label.equals("edm")){
     	if(args.length > 0){
     		if(args[0].equalsIgnoreCase("follow")) {Executor.follow(this, sender, args);}
