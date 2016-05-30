@@ -3,6 +3,11 @@ package io.github.Oranitha.EverydayMiracles;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,6 +18,7 @@ public final class DataHandler {
 	private static ArrayList<String> deities;
 	private static File dataFolder;
 	private static EverydayMiracles plugin;
+	private static TreeMap<String,Integer> trinkets;
 	
 	public DataHandler(){}
 	
@@ -20,6 +26,7 @@ public final class DataHandler {
 		plugin=instance;
 		dataFolder = instance.getDataFolder();
 		deities = generateDeityList();
+		trinkets = generateRewardsList("Trinkets");
 	}
 	
 	public ArrayList<String> getDeities(){
@@ -60,6 +67,22 @@ public final class DataHandler {
 		return plugin.getPlayerData().getString(name+".deity");
 	}
 	
+	//TODO: Make this work for all possible pools
+	public String getItemFromPool(){
+		Random generator = new Random();
+		int pos = generator.nextInt(trinkets.lastEntry().getValue());
+		List<String> treasurePool = new ArrayList<String>(trinkets.keySet());
+		plugin.log("Random int for testing treasurepool: "+pos);
+		for(String key: treasurePool){
+			int val = trinkets.get(key);
+			plugin.log("Should be increasing: "+val);
+			if(val>=pos){
+				return key;
+			}
+		}
+		return null;
+	}
+	
 	private ArrayList<String> generateDeityList() {
 		ArrayList<String> deityList = new ArrayList<String>();
 		File[] files = new File(dataFolder+"/deities").listFiles();
@@ -71,8 +94,23 @@ public final class DataHandler {
 			    }
 			}
 		}
-		return deityList;
-		
+		return deityList;	
+	}
+	
+	private TreeMap<String,Integer> generateRewardsList(String rewardPool){
+		TreeMap<String,Integer> rewardsList = new TreeMap<String,Integer>(); 
+		FileConfiguration config = plugin.getConfig();
+		Map<String,Object> unformattedRewards = config.getConfigurationSection("Reward Pools."+rewardPool).getValues(false);
+		List<String> keys = new ArrayList<String>(unformattedRewards.keySet());
+		int probTotal = 0;
+		int holder = 0;
+		for(String key : keys){
+			//TODO less hideous workaround
+			holder = Integer.parseInt(unformattedRewards.get(key).toString());
+			probTotal += holder;
+			unformattedRewards.put(key, probTotal);
+		}
+		return rewardsList;
 	}
 
 }
