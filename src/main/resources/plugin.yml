@@ -5,12 +5,35 @@ author: Oranitha
 
 commands:
   edm:
-    description: This is the base command used for invoking EverydayMiracles commands.
-    usage: /<command>
     permission: everydaymiracles.worship
     permission-message: You can’t use this command, you don't have the permission <permission>!
 
+  edm follow:
+    description: List available leaders
+
+  edm follow [leader]:
+    description: Follow specified leader
+
+  edm quest:
+    description: Receive a quest from your leader
+
+  edm chat:
+    description: Receive a message from your leader
+
+  edm enquire:
+    description: Get info about your current quest
+
+  edm points:
+    description: Get the number of points you’ve earned
+
+  edm submit:
+    description: Submit a quest for completion
+
 permissions:
   everydaymiracles.worship:
-    description: Allows you to use basic features of EverydayMiracles, such as praying and   requesting miracles.
+    description: Allows you to use basic features of EverydayMiracles, such as following leaders and requesting assistance.
     default: true
+
+  everydaymiracles.admin:
+    description: Allows you to use advanced admin commands, such as giving players reward points and removing a player’s follower status.
+    default: op 

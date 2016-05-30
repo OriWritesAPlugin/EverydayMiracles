@@ -56,12 +56,12 @@ public final class EverydayMiracles extends JavaPlugin{
     		else if(args[0].equalsIgnoreCase("quest")) {Executor.quest(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("enquire")) {Executor.enquire(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("submit")) {Executor.submit(this,sender,args, dataHandler);}
+    		else if(args[0].equalsIgnoreCase("request")) {Executor.request(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("points")) {Executor.points(this,sender);
+    		
     		} else {displayCommands(sender);}}
     	else { displayCommands(sender);}
-        //getCommand("edm guidance").setExecutor(new CheckCommand());
         //getCommand("edm reject").setExecutor(new OfferCommand());
-    	//getCommand("edm submit").setExecutor(new OfferCommand());
     	}
     	return true;
     }
@@ -101,8 +101,8 @@ public final class EverydayMiracles extends JavaPlugin{
     
    
     public void displayCommands(CommandSender sender){
-    	//TODO: Replace with version that reads properly from config.
-    	sender.sendMessage("Supported commands are: follow. Use as /edm <command>, e.g. /edm follow.");
+    	//TODO: Replace with a call to /help EveryDayMiracles...somehow
+    	sender.sendMessage("Use /help EveryDayMiracles for a list of commands");
     }
     
   //___________________________________PRIVATE HELPERS__________________________________\\

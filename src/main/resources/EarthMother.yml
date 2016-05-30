@@ -19,9 +19,10 @@ EarthMother:
     C: Finished already? How delightful!
     D: Fantastic!
 
-  #Possible responses when followers use /edm chat. Left of the colon can be anything, as
-  #long as it’s unique--letters are pretty easy.
+  #Possible responses when followers use /edm chat.
   chatter:
+
+    #Left of the colon can be anything, as long as it’s unique--letters are pretty easy.
     A: Hello, young one.
     B: A pleasure as always, child.
     C: So, dear, how does your garden grow?
@@ -31,15 +32,41 @@ EarthMother:
     G: Nourish the fields with the bones of your enemies, love.
     H: Oh, there you are!
 
+  #Quests available from this leader.
   quests:
+
+    #Again, letter can be anything, including things used in “chatter,” as long as there’s
+    #no repeats within “quests” (the second will overwrite the first).
     A:
-      text: Cardio break! Give me 10 Squats and an apple, dear!
+      #Text player receives when  quest is assigned
+      text: Cardio break! Give me 10 squats and an apple!
 
       #Must be one of https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html
       statistic: SNEAK_TIME
+      statAmount: 1
 
       #Must be one of https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
       item: APPLE
-      statAmount: 1
+      #Can’t go over the stack size for the item…yet.
       itemAmount: 1
+
+      #Number of points this quest is worth
       points: 10
+
+    B:
+      text: We seem to have lost a few square meters of forest…16 saplings oughta do it…any kind!
+      item: SAPLING
+      itemAmount: 16
+      points: 15
+
+    C:
+      text: Oh my word, I’ve lost my lucky comb! Could you be a dear and check 2 or 3 chests for me?
+      statistic: CHEST_OPENED 
+      statAmount: 2
+      points: 2
+
+  #Requests available from this leader.
+  requests:
+    Kit: Of course, dear! I should have some tools lying around…
+    Trinket: Of course! I have just the thing!
+    Heal: Oh, you poor dear. Let me help!
