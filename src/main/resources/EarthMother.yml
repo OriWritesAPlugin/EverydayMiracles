@@ -17,20 +17,27 @@ EarthMother:
     A: Thank you, dear!
     B: You’ve done a wonderful job.
     C: Finished already? How delightful!
-    D: Fantastic!
+    D: The forest grows with your every effort.
+    E: We grow!
 
   #Possible responses when followers use /edm chat.
   chatter:
 
-    #Left of the colon can be anything, as long as it’s unique--letters are pretty easy.
+    #Left of the colon can be anything, as long as it’s unique--letters are pretty easy. It’s an internal ID.
     A: Hello, young one.
     B: A pleasure as always, child.
     C: So, dear, how does your garden grow?
     D: You look as bright and lovely as ever.
     E: Did you remember to water your flowers?
     F: Everything alright?
-    G: Nourish the fields with the bones of your enemies, love.
+    G: Gardening tip—nourish the fields with the bones of your enemies!
     H: Oh, there you are!
+    I: I smell intruders. Be wary, dear…
+    J: Plaguelings? In MY jungle?
+    K: I wonder how Earthshaker’s doing?
+    L: Planting lots of trees, love?
+    M: It’s a pleasure, sapling!
+
 
   #Quests available from this leader.
   quests:
@@ -47,26 +54,66 @@ EarthMother:
 
       #Must be one of https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
       item: APPLE
-      #Can’t go over the stack size for the item…yet.
       itemAmount: 1
 
       #Number of points this quest is worth
       points: 10
 
     B:
-      text: We seem to have lost a few square meters of forest…16 saplings oughta do it…any kind!
+      text: We seem to have lost a bit of forest…INEXCUSABLE! 16 SAPLINGS ON THE DOUBLE, MY DEAR.
       item: SAPLING
       itemAmount: 16
       points: 15
 
     C:
-      text: Oh my word, I’ve lost my lucky comb! Could you be a dear and check 2 or 3 chests for me?
+      text: Oh my word, I’ve lost my lucky beard comb! Could you be a dear and check 2 or 3 chests for me?
       statistic: CHEST_OPENED 
       statAmount: 2
-      points: 2
+      points: 4
+
+    D:
+      text: I’m planning to expand the rock garden...if only I had a stack of cobblestone...hmm.
+      item: COBBLESTONE
+      itemAmount: 2
+      points: 25
+
+    E:
+      text: A little seedling asked me for a toy. Do you have a spare wooden sword? I can grow the edge dull!
+      item: WOOD_SWORD
+      itemAmount: 1
+      points: 7
+
+    F:
+      text: These monsters DARE walk where my saplings do? Child, teach them a lesson! Do some damage, at least 10 hearts!
+      stat: DAMAGE_DEALT
+      statAmount: 200
+      points: 15
+
+    G:
+      text: Time to map out a new flowerbed! Except...where did I put that blank map…?
+      item: EMPTY_MAP
+      itemAmount: 1
+      points: 40
+
+    H:
+      text: Goddess of Nature or no, I can always use more wheat! Could you spare a half stack, dear? It’d mean a lot!
+      item: WHEAT
+      itemAmount: 32
+      points: 25
+
+    I:
+      text: You’ve been working too hard, dearie! I command thee...take a fishing break! And don’t come back until you’ve caught at least one fish!
+      stat: FISH_CAUGHT
+      statAmount: 1
+      points: 10
 
   #Requests available from this leader.
   requests:
-    Kit: Of course, dear! I should have some tools lying around…
-    Trinket: Of course! I have just the thing!
-    Heal: Oh, you poor dear. Let me help!
+    kit: Of course, dear! I should have some tools lying around…
+    trinket: Of course! I have just the thing!
+    heal: Oh, you poor dear. Let me help!
+    chicken: Stuff
+    ore: Stuff
+
+
+

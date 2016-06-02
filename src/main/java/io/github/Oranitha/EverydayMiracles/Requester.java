@@ -4,20 +4,24 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public final class Requester {
   public enum Request{
-	  Kit,
-	  Trinket,
-	  Heal,
-	  Ore
+	  KIT,
+	  TRINKET,
+	  HEAL,
+	  ORE,
+	  CHICKEN,
+	  COW,
+	  TREASURE
   }
   
   public static boolean checkRequest(String string){
 	  try{
-	    Request.valueOf(string);
+	    Request.valueOf(string.toUpperCase());
 	    return true;
 	  } catch(IllegalArgumentException e){
 		return false;
@@ -28,14 +32,20 @@ public final class Requester {
 	  try{
 		  Request request = Request.valueOf(string);
 		  switch(request) {
-		  case Kit:
+		  case KIT:
 			  return 20;
-		  case Trinket:
-			  return 2;
-		  case Heal:
+		  case CHICKEN:
+			  return 200;
+		  case COW:
+			  return 500;
+		  case HEAL:
 			  return 10;
-		  case Ore:
+		  case ORE:
 			  return 15;
+		  case TRINKET:
+			  return 2;
+		  case TREASURE:
+			  return 30;
 		  default:
 			  return 0;
 		  }
@@ -50,18 +60,19 @@ public final class Requester {
 	  String name = player.getName();
 	  int cost = requestCost(string);
 	  int balance = playerData.getInt(name+".points");
+	  DataHandler dh = plugin.getDataHandler();
 	  
 	  if(balance<cost){
-		  sender.sendMessage("You don't have enough points!");
+		  player.sendMessage("You don't have enough points!");
 	  } else {
 		  int newPoints = playerData.getInt(name+".points")-cost;
 		  playerData.set(name+".points", newPoints);
 		  plugin.savePlayerData();
+		  World world = player.getWorld();
 		  try{
 			  Request request = Request.valueOf(string);
 			  switch(request) {
-			  case Kit:
-				  World world = player.getWorld();
+			  case KIT:
 				  ItemStack shovel = new ItemStack(Material.STONE_SPADE,1);
 				  world.dropItem(player.getLocation(), shovel);
 				  ItemStack pick = new ItemStack(Material.STONE_PICKAXE,1);
@@ -73,17 +84,42 @@ public final class Requester {
 				  ItemStack bread = new ItemStack(Material.BREAD,2);
 				  world.dropItem(player.getLocation(), bread);
 				  break;
-			  case Trinket:
+			  case CHICKEN:
+				  	world.spawnEntity(player.getLocation(), EntityType.CHICKEN);
 				  break;
-			  case Heal:
-				  double health = player.getHealth()+80;
-				  if(health>200){
-					  player.setHealth(200);
+			  case TRINKET:
+				  String trinketString = dh.getItemFromPool();
+				  try{
+					  ItemStack trinket = new ItemStack(Material.valueOf(trinketString),1);
+					  world.dropItem(player.getLocation(), trinket);
+				  } catch (IllegalArgumentException e){
+					  plugin.log("Faulty name in the Trinkets item list: "+ trinketString);
+				  }
+				  break;
+			  case TREASURE:
+				  String treasureString = dh.getItemFromTreasurePool();
+				  try{
+					  ItemStack trinket = new ItemStack(Material.valueOf(treasureString),1);
+					  world.dropItem(player.getLocation(), trinket);
+				  } catch (IllegalArgumentException e){
+					  plugin.log("Faulty name in the Trinkets item list: "+ treasureString);
+				  }
+				  break;
+			  case HEAL:
+				  double health = player.getHealth()+8.0;
+				  if(health>20.0){
+					  player.setHealth(20.0);
 				  } else {
 					  player.setHealth(health);
 				  }
 				  break;
-			  case Ore:
+			  case ORE:
+				  ItemStack coal = new ItemStack(Material.COAL_BLOCK,1);
+				  world.dropItem(player.getLocation(), coal);
+				  ItemStack ore = new ItemStack(Material.IRON_ORE,8);
+				  world.dropItem(player.getLocation(), ore);
+				  ItemStack ore2 = new ItemStack(Material.GOLD_ORE,1);
+				  world.dropItem(player.getLocation(), ore2);
 				  break;
 			  default:
 				  plugin.log("The plugin author did a bad. Faulty enum: "+string);

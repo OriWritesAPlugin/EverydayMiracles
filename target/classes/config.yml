@@ -1,3 +1,5 @@
+Settings:
+  Prefixes: false
 Reward Pools:  
   Trinkets:
     APPLE: 3
@@ -87,6 +89,41 @@ Reward Pools:
     WOOD: 30
     WOOD_HOE: 20
     WOOL: 15
+
+  Treasures:
+    BLAZE_ROD: 3
+    BLAZE_POWDER: 2
+    BOOKSHELF: 2
+    BREWING_STAND_ITEM: 1
+    CAKE: 2
+    CHAINMAIL_BOOTS: 1
+    CHAINMAIL_CHESTPLATE: 1
+    CHAINMAIL_HELMET: 1
+    CHAINMAIL_LEGGINGS: 1
+    CHORUS_FRUIT: 1
+    COAL_BLOCK: 4
+    COMPASS: 2
+    DIAMOND: 2
+    DIAMOND_BARDING: 1
+    DIAMOND_HELMET: 1
+    DIAMOND_SPADE: 1
+    ELYTRA: 1
+    EMERALD: 2
+    END_ROD: 2
+    ENDER_CHEST: 1
+    ENDER_PEARL: 1
+    EXP_BOTTLE: 2
+    EYE_OF_ENDER: 1
+    GHAST_TEAR: 1
+    GOLD_BARDING: 2
+    GOLD_HELMET: 1
+    GOLD_RECORD: 1
+    IRON_BARDING: 2
+    LAPIS_BLOCK: 1
+    LEASH: 2
+    PRISMARINE_CRYSTALS: 4
+    PRISMARINE_SHARD: 4
+    SADDLE: 2
   
   
   

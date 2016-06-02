@@ -78,7 +78,6 @@ public final class Executor{
 	public static boolean quest(EverydayMiracles plugin, CommandSender sender, String[] args, DataHandler dh){
 		//Check if not player
  	    if (!(sender instanceof Player)) {sender.sendMessage("The console has no higher power to speak to!"); return false;}
- 	    
  	    String deity = dh.getPlayerDeity(sender);
  	    Player player = (Player)sender;
  	    String name = player.getName();
@@ -244,18 +243,17 @@ public final class Executor{
  	    //Check if no deity assigned
  	    if(deity == null){sender.sendMessage("You have not yet chosen who to follow!"); return true;}
 		FileConfiguration deityConfig = dh.getDeity(deity);
-		//TODO remove test statement below
-		if(args.length>1){plugin.log(args[1]);}
-		if(args.length>1 && Requester.checkRequest(args[1])){
-			Requester.invoke(plugin, sender, args[1]);
+		Map<String,Object> requestList = deityConfig.getConfigurationSection(deity+".requests").getValues(false);
+		if(args.length>1 && Requester.checkRequest(args[1].toUpperCase()) && requestList.containsKey(args[1].toLowerCase())){
+			Requester.invoke(plugin, sender, args[1].toUpperCase());
 			return true;
 		} else {
-			Map<String,Object> requestList = deityConfig.getConfigurationSection(deity+".requests").getValues(false);
 			Set<String> spells = requestList.keySet();
 			StringBuilder out = new StringBuilder("Available requests (and costs) are: ");
 			for(String spell : spells){
+				spell = spell.toUpperCase();
 				if(Requester.checkRequest(spell)){
-					out.append(spell+ "("+Requester.requestCost(spell)+"), ");
+					out.append(spell.toLowerCase()+ "("+Requester.requestCost(spell)+"), ");
 				} else {
 					plugin.log("Illegal spell! Only use the programmed ones, caps matter, please!");
 				}

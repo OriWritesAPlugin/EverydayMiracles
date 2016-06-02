@@ -75,6 +75,14 @@ public final class EverydayMiracles extends JavaPlugin{
     	return playerdata;
     }
     
+    public FileConfiguration getConfig(){
+    	if (config == null){
+    		createFiles();
+    		log("config was lost...");
+    	}
+    	return config;
+    }
+    
     public void savePlayerData(){
     	try {
 			getPlayerData().save(playerdataf);
@@ -84,6 +92,8 @@ public final class EverydayMiracles extends JavaPlugin{
     }
     
     public void setNickname(Player p){
+    	   log(dataHandler.getPlayerDeity(p));
+    	   log(p.getName());
 	       String deity = dataHandler.getPlayerDeity(p);
 	       if (!(deity==null)){
 	    	   FileConfiguration deityFile = dataHandler.getDeity(deity);
@@ -91,6 +101,10 @@ public final class EverydayMiracles extends JavaPlugin{
 	    	   String followerNick = deityFile.getString(deity+".followers");
 	           p.setDisplayName(ChatColor.WHITE+"["+ChatColor.valueOf(chatColor)+followerNick+ChatColor.WHITE+"] "+p.getDisplayName());
 	       }
+    }
+    
+    public DataHandler getDataHandler(){
+    	return dataHandler;
     }
     
 //_____________________________________UTILITY METHODS__________________________________\\

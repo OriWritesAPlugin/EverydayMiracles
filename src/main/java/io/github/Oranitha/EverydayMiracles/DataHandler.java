@@ -19,14 +19,16 @@ public final class DataHandler {
 	private static File dataFolder;
 	private static EverydayMiracles plugin;
 	private static TreeMap<String,Integer> trinkets;
+	private static TreeMap<String,Integer> treasures;
 	
 	public DataHandler(){}
 	
 	public DataHandler(EverydayMiracles instance){
-		plugin=instance;
+		plugin =instance;
 		dataFolder = instance.getDataFolder();
 		deities = generateDeityList();
 		trinkets = generateRewardsList("Trinkets");
+		//treasures = generateRewardsList("Treasures");
 	}
 	
 	public ArrayList<String> getDeities(){
@@ -55,7 +57,7 @@ public final class DataHandler {
 			plugin.log("Creating player info for "+name);
 			FileConfiguration dataFile = plugin.getPlayerData();
 			dataFile.set(name, true);
-			//Null values exist for reference.
+			//Null values exist for resetting player
 			//dataFile.set(name+".deity", null);
 			//dataFile.set(name+".rank", null);
 			dataFile.set(name+".points", 0);
@@ -64,6 +66,8 @@ public final class DataHandler {
 			dataFile.set(name+".lastQuest", 0);
 			plugin.savePlayerData();
 		}
+		plugin.log("Deity not equal to null.");
+		plugin.log(plugin.getPlayerData().getString(name+".deity"));
 		return plugin.getPlayerData().getString(name+".deity");
 	}
 	
@@ -72,10 +76,22 @@ public final class DataHandler {
 		Random generator = new Random();
 		int pos = generator.nextInt(trinkets.lastEntry().getValue());
 		List<String> treasurePool = new ArrayList<String>(trinkets.keySet());
-		plugin.log("Random int for testing treasurepool: "+pos);
 		for(String key: treasurePool){
 			int val = trinkets.get(key);
-			plugin.log("Should be increasing: "+val);
+			if(val>=pos){
+				return key;
+			}
+		}
+		return null;
+	}
+	
+	//TODO: Remove this, replace with above
+	public String getItemFromTreasurePool(){
+		Random generator = new Random();
+		int pos = generator.nextInt(treasures.lastEntry().getValue());
+		List<String> treasurePool = new ArrayList<String>(treasures.keySet());
+		for(String key: treasurePool){
+			int val = treasures.get(key);
 			if(val>=pos){
 				return key;
 			}
@@ -108,7 +124,7 @@ public final class DataHandler {
 			//TODO less hideous workaround
 			holder = Integer.parseInt(unformattedRewards.get(key).toString());
 			probTotal += holder;
-			unformattedRewards.put(key, probTotal);
+			rewardsList.put(key, probTotal);
 		}
 		return rewardsList;
 	}
