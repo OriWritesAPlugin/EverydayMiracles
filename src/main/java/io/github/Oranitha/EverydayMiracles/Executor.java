@@ -86,38 +86,49 @@ public final class Executor{
  	    if(deity == null){player.sendMessage("You have not yet chosen who to follow!"); return true;}
 		
  	    FileConfiguration deityConfig = dh.getDeity(deity);
-		try{
+		//try{
 			Map<String,Object> questList = deityConfig.getConfigurationSection(deity+".quests").getValues(false);
 			List<String> keys = new ArrayList<String>(questList.keySet());
 			Random generator = new Random();
 			String randomKey = keys.get( generator.nextInt(keys.size()) );
 			ConfigurationSection quest = (ConfigurationSection) questList.get(randomKey);
-			try{
+			//try{
 				//transfer data from quest to player. Chunky. Better way?
 				ConfigurationSection playerData = plugin.getPlayerData();
+				ConfigurationSection itemList = quest.getConfigurationSection("items");
+				ConfigurationSection statList = quest.getConfigurationSection("stats");
+				//ConfigurationSection entityList = quest.getConfigurationSection("entities");
+				if(!(itemList==null)){
+					playerData.set(name+".questItems", itemList);
+				}
+				if(!(statList==null)){
+					Map<String,Object> statSection = statList.getValues(false);
+					List<String> statKeys = new ArrayList<String>(statSection.keySet());
+					char i = 'A';
+					for(String statEntry : statKeys){
+						ConfigurationSection statAccess = statList.getConfigurationSection(statEntry);
+						playerData.set(name+".questStats."+i+".stat", statAccess.get(".stat"));
+					    plugin.log("The probable problem: "+statAccess.get(".stat"));
+					    plugin.log("The stat amount possessed is: "+player.getStatistic(Statistic.valueOf(statAccess.get(".stat").toString())));
+						int statAmountNew = Integer.parseInt(statAccess.get(".statAmount").toString())+player.getStatistic(Statistic.valueOf(statAccess.get(".stat").toString()));
+						playerData.set(name+".questStats."+i+".statAmount", statAmountNew);
+						i ++;
+					}
+				}
 				String questDesc = quest.getString("text");
 				playerData.set(name+".questDesc", questDesc);
 				playerData.set(name+".questStatistic", quest.getString("statistic"));
-				playerData.set(name+".questItem", quest.getString("item"));
-				playerData.set(name+".questItemAmount", quest.getInt("itemAmount"));
 				playerData.set(name+".questWorth", quest.getInt("points"));
-				if (playerData.getString(name+".questStatistic")!=null){
-					plugin.log(quest.getString("statistic"));
-					Statistic statistic = Statistic.valueOf(quest.getString("statistic"));
-					int oldStat = player.getStatistic(statistic);
-					playerData.set(name+".questStatStart", oldStat);
-					playerData.set(name+".questStatNeed", oldStat+quest.getInt("statAmount"));
-				}
 				plugin.savePlayerData();
 				player.sendMessage(ChatColor.ITALIC+questDesc);
-			} catch (NullPointerException e){
-				player.sendMessage(ChatColor.RED+"One of your leader's quests is malformed...contact your dev! Quest "+quest.toString());
-				return false;
-			}
-		} catch(NullPointerException e) {
-			player.sendMessage(ChatColor.RED+"Your leader has no quests set up...contact your dev!");
-			return false;
-		}
+			//} catch (NullPointerException e){
+				//player.sendMessage(ChatColor.RED+"One of your leader's quests is malformed...contact your dev! Quest "+quest.toString());
+				//return false;
+			//}
+		//} catch(NullPointerException e) {
+			//player.sendMessage(ChatColor.RED+"Your leader has no quests set up...contact your dev!");
+			//return false;
+		//}
 		return true;
 	}
 	
@@ -139,8 +150,8 @@ public final class Executor{
 	}
 	
 	public static boolean submit(EverydayMiracles plugin, CommandSender sender, String[] args, DataHandler dh){
-		boolean statComplete = false;
-		boolean itemComplete = false;
+		boolean statComplete = true;
+		boolean itemComplete = true;
 		//Check if not player
  	    if (!(sender instanceof Player)) {sender.sendMessage("The console cannot accept quests, it is too powerful!"); return true;}
  	    
@@ -152,51 +163,78 @@ public final class Executor{
  	    if(deity == null){sender.sendMessage("You have not yet chosen who to follow!"); return true;}
  	    
  	    FileConfiguration playerData = plugin.getPlayerData();
- 	    String statisticString = playerData.getString(name+".questStatistic");
- 	    String itemString = playerData.getString(name+".questItem");
- 	    
+ 	    ConfigurationSection statList = playerData.getConfigurationSection(name+".questStats");
+ 	    ConfigurationSection itemList = playerData.getConfigurationSection(name+".questItems");
+ 	    ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+    	PlayerInventory inventory = player.getInventory();
+ 	   
  	    //Check if stats part of quest is done
- 	    plugin.log("statisticString is: "+statisticString);
- 	    plugin.log("itemString is: "+statisticString);
- 	    if(statisticString==null){
- 	    	statComplete = true;
+ 	    if(statList.getValues(false)==null){
  	    	plugin.log("Autoclear stats");
  	    }else{
- 	    	Statistic statistic = Statistic.valueOf(statisticString);
- 	    	int oldStat = player.getStatistic(statistic);
- 	    	if(oldStat>=playerData.getInt(name+".questStatNeed")){
- 	    		statComplete = true;
- 	    	} else {
- 	    		player.sendMessage("You have not yet completed the requested action!");
- 	    	}
+ 	    	Map<String,Object> statSection = statList.getValues(false);
+			List<String> statKeys = new ArrayList<String>(statSection.keySet());
+			for(String statEntry : statKeys){
+				ConfigurationSection statAccess = statList.getConfigurationSection(statEntry);
+				String stat = statAccess.get("stat").toString();
+				int playerStat = player.getStatistic(Statistic.valueOf(stat));
+				int neededStat = (int) statAccess.get("statAmount");
+				if(neededStat>playerStat){
+					statComplete=false;
+					break;
+				}
+			}
  	    }
  	    
  	    //Check if items part of quest is done
- 	   if(itemString==null){
-	    	itemComplete = true;
+ 	   if(itemList.getValues(false)==null){
 	    	plugin.log("Autoclear items");
 	    }else{
-	    	int itemNumber = playerData.getInt(name+".questItemAmount");
-	    	int playerAmount = 0;
-	    	PlayerInventory inventory = player.getInventory();
+	    	Map<String,Object> itemSection = itemList.getValues(false);
+			List<String> itemKeys = new ArrayList<String>(itemSection.keySet());
 	    	ItemStack[] contents = inventory.getContents();
-	    	
-	    	for(ItemStack itemStack : contents){
-	    		//TODO Fix this you lazy asshole
-	    		//So this is almost definitely redundant as shit but I am super tired of rebuilding this project so BANDAIDS.
-	    		if (itemStack!=null && itemStack.getType() !=null && itemStack.getType() == Material.valueOf(itemString)){
-	    		  playerAmount += itemStack.getAmount();	
-	    		}
-	    	}
-	    	ItemStack itemstack = new ItemStack(Material.valueOf(itemString), itemNumber);
-	    	if (playerAmount>=itemNumber) {
-	            inventory.removeItem(itemstack);
-	            itemComplete = true;
-	    	} else {
-	    		player.sendMessage("You need to collect more items before handing them in!");
-	    	}
+			for(String itemEntry : itemKeys){
+				ConfigurationSection itemAccess = itemList.getConfigurationSection(itemEntry);
+				String item = itemAccess.getString("item");
+				String damageVal = itemAccess.getString("damageVal");
+				int amount = itemAccess.getInt("itemAmount");
+				ItemStack itemStack;
+				int playerAmount = 0;
+				if(damageVal!=null){
+					itemStack = new ItemStack(Material.valueOf(item),amount,Short.parseShort(damageVal));
+					for(ItemStack invStack : contents){
+			    		if (invStack!=null && invStack.getType() == Material.valueOf(item) && invStack.getDurability() == Short.parseShort(damageVal)){
+			    			playerAmount += invStack.getAmount();	
+			    		}
+			    	}
+				} else {
+					itemStack = new ItemStack(Material.valueOf(item),amount);
+					for(ItemStack invStack : contents){
+			    		if (invStack!=null && invStack.getType() == Material.valueOf(item)){
+			    		  playerAmount += invStack.getAmount();	
+			    		}
+			    	}
+				}
+		    	if (playerAmount>=amount) {
+		    		plugin.log("Player amounts: "+playerAmount);
+		            items.add(itemStack);
+		    	} else {
+		    		itemComplete = false;
+		    	}
+			}
 	    }
+ 	   
+			
+		if(!statComplete){
+			player.sendMessage("You have not yet completed a portion of your task!");
+		}
+		if(!itemComplete){
+			player.sendMessage("You do not have all necessary items!");
+		}
     	if(statComplete && itemComplete){
+    		for(ItemStack itemStack : items){
+    			inventory.removeItem(itemStack);
+    		}
     		FileConfiguration deityConfig = dh.getDeity(deity);
     		try{
     			Map<String,Object> completionList = deityConfig.getConfigurationSection(deity+".quest complete").getValues(false);
@@ -212,9 +250,10 @@ public final class Executor{
     		playerData.set(name+".points", newPoints);
     		plugin.savePlayerData();
     		resetQuestData(plugin, player.getName());
+    		return true;
     	}
- 	    return true;
-	}
+    	return true;
+    }
 	
 	public static boolean points(EverydayMiracles plugin, CommandSender sender){
 		if (!(sender instanceof Player)) {sender.sendMessage("The console is pointless. Wait..."); return true;}
