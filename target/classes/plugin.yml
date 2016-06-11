@@ -5,6 +5,7 @@ author: Oranitha
 
 commands:
   edm:
+    description: Base command for EverydayMiracles
     permission: everydaymiracles.worship
     permission-message: You can’t use this command, you don't have the permission <permission>!
 
@@ -28,6 +29,18 @@ commands:
 
   edm submit:
     description: Submit a quest for completion
+
+  edma:
+    description: Base command for EDM admin tasks.
+    permission: everydaymiracles.admin
+    permission-message: You can’t use this command, you don't have the permission <permission>!
+
+  edma givePoints:
+    description: /givePoints <player> <amount>. Takes negatives.
+
+  edma setDeity:
+    description: /setDeity <player> <deity>
+
 
 permissions:
   everydaymiracles.worship:

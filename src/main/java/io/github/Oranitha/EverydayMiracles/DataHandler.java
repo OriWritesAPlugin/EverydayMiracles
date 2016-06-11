@@ -1,10 +1,11 @@
 package io.github.Oranitha.EverydayMiracles;
 
-import java.io.File;
+import java.io.File; 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
@@ -28,7 +29,7 @@ public final class DataHandler {
 		dataFolder = instance.getDataFolder();
 		deities = generateDeityList();
 		trinkets = generateRewardsList("Trinkets");
-		//treasures = generateRewardsList("Treasures");
+		treasures = generateRewardsList("Treasures");
 	}
 	
 	public ArrayList<String> getDeities(){
@@ -51,6 +52,39 @@ public final class DataHandler {
 	    	return deityYAML;
 	}
 	
+	public void deityPointsSet(String deity, int points){
+		FileConfiguration deityFile = getDeity(deity);
+		int oldPoints = deityFile.getInt(deity+".points");
+		plugin.log("Oldpoints: "+oldPoints);
+		deityFile.set(deity+".points", oldPoints+points);
+    	try {
+    		plugin.log("Something happened, we're trying to save...");
+    		File deityf = new File(plugin.getDataFolder()+"/deities/",deity+".yml");
+			deityFile.save(deityf);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int deityPointsGet(String deity){
+		FileConfiguration deityFile = getDeity(deity);
+		plugin.log("Deity: "+deity+" Points: "+deityFile.getInt(deity+".points"));
+		return deityFile.getInt(deity+".points");
+	}
+	
+	public NavigableMap<Integer,String> deitiesByPoints(){
+		TreeMap<Integer, String> out = new TreeMap<Integer, String>();
+		for(String deity : deities){
+		  int points = deityPointsGet(deity);
+		  while(out.get(points)!=null){
+			  points+=1;
+		  }
+		  out.put(points, deity);
+		}
+		plugin.log(out.toString());
+		return out.descendingMap();
+	}
+	
 	public String getPlayerDeity(CommandSender sender){
 		String name = sender.getName();
 		if(plugin.getPlayerData().getString(name+".deity")==null){
@@ -58,11 +92,11 @@ public final class DataHandler {
 			FileConfiguration dataFile = plugin.getPlayerData();
 			dataFile.set(name, true);
 			//Null values exist for resetting player
-			//dataFile.set(name+".deity", null);
-			//dataFile.set(name+".rank", null);
+			dataFile.set(name+".deity", null);
+			dataFile.set(name+".rank", null);
 			dataFile.set(name+".points", 0);
-			//dataFile.set(name+".questText", null);
-			//dataFile.set(name+".questStat", null);
+			dataFile.set(name+".questText", null);
+			dataFile.set(name+".questStat", null);
 			dataFile.set(name+".lastQuest", 0);
 			plugin.savePlayerData();
 		}

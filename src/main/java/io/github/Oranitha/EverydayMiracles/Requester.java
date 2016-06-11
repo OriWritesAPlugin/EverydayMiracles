@@ -1,12 +1,17 @@
 package io.github.Oranitha.EverydayMiracles;
 
+import java.util.ArrayList;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public final class Requester {
   public enum Request{
@@ -16,7 +21,11 @@ public final class Requester {
 	  ORE,
 	  CHICKEN,
 	  COW,
-	  TREASURE
+	  SHEEP,
+	  WOLF,
+	  OCELOT,
+	  TREASURE,
+	  WRIT
   }
   
   public static boolean checkRequest(String string){
@@ -33,19 +42,27 @@ public final class Requester {
 		  Request request = Request.valueOf(string);
 		  switch(request) {
 		  case KIT:
-			  return 20;
+			  return 40;
 		  case CHICKEN:
 			  return 200;
 		  case COW:
 			  return 500;
+		  case SHEEP:
+			  return 300;
+		  case WOLF:
+			  return 400;
+		  case OCELOT:
+			  return 400;
 		  case HEAL:
-			  return 10;
+			  return 30;
 		  case ORE:
-			  return 15;
+			  return 30;
 		  case TRINKET:
 			  return 2;
 		  case TREASURE:
 			  return 30;
+		  case WRIT:
+			  return 50;
 		  default:
 			  return 0;
 		  }
@@ -73,19 +90,31 @@ public final class Requester {
 			  Request request = Request.valueOf(string);
 			  switch(request) {
 			  case KIT:
-				  ItemStack shovel = new ItemStack(Material.STONE_SPADE,1);
+				  ItemStack shovel = new ItemStack(Material.IRON_SPADE,1);
 				  world.dropItem(player.getLocation(), shovel);
-				  ItemStack pick = new ItemStack(Material.STONE_PICKAXE,1);
+				  ItemStack pick = new ItemStack(Material.IRON_PICKAXE,1);
 				  world.dropItem(player.getLocation(), pick);
-				  ItemStack sword = new ItemStack(Material.STONE_SWORD,1);
+				  ItemStack sword = new ItemStack(Material.IRON_SWORD,1);
 				  world.dropItem(player.getLocation(), sword);
-				  ItemStack torches = new ItemStack(Material.TORCH,16);
+				  ItemStack torches = new ItemStack(Material.TORCH,32);
 				  world.dropItem(player.getLocation(), torches);
-				  ItemStack bread = new ItemStack(Material.BREAD,2);
+				  ItemStack bread = new ItemStack(Material.BREAD,3);
 				  world.dropItem(player.getLocation(), bread);
 				  break;
 			  case CHICKEN:
 				  	world.spawnEntity(player.getLocation(), EntityType.CHICKEN);
+				  break;
+			  case COW:
+				  	world.spawnEntity(player.getLocation(), EntityType.COW);
+				  break;
+			  case SHEEP:
+				  	world.spawnEntity(player.getLocation(), EntityType.SHEEP);
+				  break;
+			  case WOLF:
+				  	world.spawnEntity(player.getLocation(), EntityType.WOLF);
+				  break;
+			  case OCELOT:
+				  	world.spawnEntity(player.getLocation(), EntityType.OCELOT);
 				  break;
 			  case TRINKET:
 				  String trinketString = dh.getItemFromPool();
@@ -102,16 +131,21 @@ public final class Requester {
 					  ItemStack trinket = new ItemStack(Material.valueOf(treasureString),1);
 					  world.dropItem(player.getLocation(), trinket);
 				  } catch (IllegalArgumentException e){
-					  plugin.log("Faulty name in the Trinkets item list: "+ treasureString);
+					  plugin.log("Faulty name in the Treasures item list: "+ treasureString);
 				  }
 				  break;
 			  case HEAL:
-				  double health = player.getHealth()+8.0;
-				  if(health>20.0){
+				  int lastTime = playerData.getInt(name+".lastHeal");
+				  int currentTime = player.getStatistic(Statistic.PLAY_ONE_TICK);
+				  if(currentTime > lastTime+2400){
 					  player.setHealth(20.0);
+					  playerData.set(name+".lastHeal", currentTime);
 				  } else {
-					  player.setHealth(health);
+					  player.sendMessage("You must play "+(lastTime+2400-currentTime)/20+" seconds before healing again!");
+					  int addedPoints = playerData.getInt(name+".points")+requestCost("HEAL");
+					  playerData.set(name+".points", addedPoints);
 				  }
+				  plugin.savePlayerData();
 				  break;
 			  case ORE:
 				  ItemStack coal = new ItemStack(Material.COAL_BLOCK,1);
@@ -121,6 +155,16 @@ public final class Requester {
 				  ItemStack ore2 = new ItemStack(Material.GOLD_ORE,1);
 				  world.dropItem(player.getLocation(), ore2);
 				  break;
+			  case WRIT:
+				  ItemStack item = new ItemStack(Material.PAPER,1);
+				  ItemMeta im = item.getItemMeta();
+				  im.setDisplayName(ChatColor.GOLD + "Writ of Honorable Service");
+				  ArrayList<String> loreList = new ArrayList<String>();
+				  loreList.add(ChatColor.DARK_AQUA + "Evidence of loyal service to the gods.");//This is the first line of lore
+				  loreList.add(ChatColor.DARK_AQUA + "Worth 50 points.");
+				  im.setLore(loreList);
+				  item.setItemMeta(im);
+				  world.dropItem(player.getLocation(), item);
 			  default:
 				  plugin.log("The plugin author did a bad. Faulty enum: "+string);
 				  break;

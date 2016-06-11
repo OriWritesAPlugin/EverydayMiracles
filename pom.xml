@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.RHaluska</groupId>
   <artifactId>EverydayMiracles</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <version>0.8.2</version>
   <build>
       <plugins>
           <plugin>

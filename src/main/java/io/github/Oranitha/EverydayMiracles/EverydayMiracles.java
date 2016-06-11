@@ -49,7 +49,7 @@ public final class EverydayMiracles extends JavaPlugin{
     @Override
     public boolean onCommand(CommandSender sender, Command command,
                              String label, String[] args) {
-    	if(label.equals("edm")){
+    	if(label.equals("edm") && sender.hasPermission("everydaymiracles.worship")){
     	if(args.length > 0){
     		if(args[0].equalsIgnoreCase("follow")) {Executor.follow(this, sender, args);}
     		else if(args[0].equalsIgnoreCase("chat")) {Executor.chat(this,sender,args, dataHandler);}
@@ -57,12 +57,18 @@ public final class EverydayMiracles extends JavaPlugin{
     		else if(args[0].equalsIgnoreCase("enquire")) {Executor.enquire(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("submit")) {Executor.submit(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("request")) {Executor.request(this,sender,args, dataHandler);}
+    		else if(args[0].equalsIgnoreCase("rankings")) {Executor.rankings(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("points")) {Executor.points(this,sender);
-    		
     		} else {displayCommands(sender);}}
     	else { displayCommands(sender);}
-        //getCommand("edm reject").setExecutor(new OfferCommand());
-    	}
+    	} else if(label.equals("edma")&&sender.hasPermission("everydaymiracles.admin")){
+    		if(args.length > 0){
+    			if(args[0].equalsIgnoreCase("givePoints")) {Executor.givePoints(this,sender,args);}
+    			else if(args[0].equalsIgnoreCase("setDeity")) {Executor.setDeity(this,sender,args, dataHandler);}
+    			else if(args[0].equalsIgnoreCase("points")) {Executor.getPoints(this,sender,args);}
+    			else if(args[0].equalsIgnoreCase("conquest")) {Executor.conquest(this,sender,args, dataHandler);}
+    		} else {displayCommandsA(sender);}
+    	} else { displayCommandsA(sender);}
     	return true;
     }
    
@@ -86,6 +92,16 @@ public final class EverydayMiracles extends JavaPlugin{
     public void savePlayerData(){
     	try {
 			getPlayerData().save(playerdataf);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void saveDeity(String deity){
+    	try {
+    		File deityf = new File(getDataFolder()+"/deities/"+"test"+".yml");
+    		log(deityf.getAbsolutePath());
+			dataHandler.getDeity(deity).save(deityf);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -115,6 +131,11 @@ public final class EverydayMiracles extends JavaPlugin{
     
    
     public void displayCommands(CommandSender sender){
+    	//TODO: Replace with a call to /help EveryDayMiracles...somehow
+    	sender.sendMessage("Use /help EveryDayMiracles for a list of commands");
+    }
+    
+    public void displayCommandsA(CommandSender sender){
     	//TODO: Replace with a call to /help EveryDayMiracles...somehow
     	sender.sendMessage("Use /help EveryDayMiracles for a list of commands");
     }
