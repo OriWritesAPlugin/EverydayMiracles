@@ -14,6 +14,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+//It's like a crappy DAO, except I haven't moved over all the methods yet.
 public final class DataHandler {
 	
 	private static ArrayList<String> deities;
@@ -56,7 +57,7 @@ public final class DataHandler {
 		FileConfiguration deityFile = getDeity(deity);
 		int oldPoints = deityFile.getInt(deity+".points");
 		plugin.log("Oldpoints: "+oldPoints);
-		deityFile.set(deity+".points", oldPoints+points);
+		deityFile.set(deity+".points", points);
     	try {
     		plugin.log("Something happened, we're trying to save...");
     		File deityf = new File(plugin.getDataFolder()+"/deities/",deity+".yml");

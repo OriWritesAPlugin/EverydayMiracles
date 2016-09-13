@@ -25,17 +25,16 @@ public final class EverydayMiracles extends JavaPlugin{
 	DataHandler dataHandler;
 	private File configf, earthmotherf, playerdataf;
 	private FileConfiguration config, earthmother, playerdata;
-	//RenameListener's a private inner class, FYI.
+	//RenameListener's a private inner class, FMI.
 	private RenameListener renameListener;
 	
 //_______________________________________MAIN LOGIC_____________________________________\\
 	@Override
 	public void onEnable(){
-		log("Loading and building...");
+		//Log statements should be prefaced with plugin name automagically
+		log("Plugin is loading up");
 		createFiles();
-		dataHandler = new DataHandler(this);
-		log("Starting listeners...");
-		
+		dataHandler = new DataHandler(this);	
 		renameListener = new RenameListener();
 		Bukkit.getServer().getPluginManager().registerEvents(renameListener, this);
 	}
@@ -43,12 +42,12 @@ public final class EverydayMiracles extends JavaPlugin{
 	@Override
 	public void onDisable(){
 		saveConfig();
-		log("EverydayMiracles has been disabled!");
+		log("Plugin has been disabled");
 	}
 	
     @Override
-    public boolean onCommand(CommandSender sender, Command command,
-                             String label, String[] args) {
+    //Theoretically a much prettier way of doing this, but the doc was so-so. Refactor?
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     	if(label.equals("edm") && sender.hasPermission("everydaymiracles.worship")){
     	if(args.length > 0){
     		if(args[0].equalsIgnoreCase("follow")) {Executor.follow(this, sender, args);}
@@ -56,6 +55,7 @@ public final class EverydayMiracles extends JavaPlugin{
     		else if(args[0].equalsIgnoreCase("quest")) {Executor.quest(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("enquire")) {Executor.enquire(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("submit")) {Executor.submit(this,sender,args, dataHandler);}
+    		else if(args[0].equalsIgnoreCase("forfeit")) {Executor.forfeit(this,sender, dataHandler);}
     		else if(args[0].equalsIgnoreCase("request")) {Executor.request(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("rankings")) {Executor.rankings(this,sender,args, dataHandler);}
     		else if(args[0].equalsIgnoreCase("points")) {Executor.points(this,sender);
@@ -66,17 +66,18 @@ public final class EverydayMiracles extends JavaPlugin{
     			if(args[0].equalsIgnoreCase("givePoints")) {Executor.givePoints(this,sender,args);}
     			else if(args[0].equalsIgnoreCase("setDeity")) {Executor.setDeity(this,sender,args, dataHandler);}
     			else if(args[0].equalsIgnoreCase("points")) {Executor.getPoints(this,sender,args);}
+    			else if(args[0].equalsIgnoreCase("islands")) {Executor.setIslands(this,sender,args, dataHandler);}
     			else if(args[0].equalsIgnoreCase("conquest")) {Executor.conquest(this,sender,args, dataHandler);}
     		} else {displayCommandsA(sender);}
     	} else { displayCommandsA(sender);}
     	return true;
     }
    
-  //_______________________________________GET/SET_____________________________________\\ 
+  //_______________________________________GET/SET/SAVE_____________________________________\\ 
     public FileConfiguration getPlayerData(){
     	if (playerdata == null){
     		createFiles();
-    		log("playerdata was lost...");
+    		log("Playerdata file lost! Has something changed?");
     	}
     	return playerdata;
     }
@@ -84,7 +85,7 @@ public final class EverydayMiracles extends JavaPlugin{
     public FileConfiguration getConfig(){
     	if (config == null){
     		createFiles();
-    		log("config was lost...");
+    		log("Config file lost! Has something changed?");
     	}
     	return config;
     }
@@ -113,8 +114,11 @@ public final class EverydayMiracles extends JavaPlugin{
 	       String deity = dataHandler.getPlayerDeity(p);
 	       if (!(deity==null)){
 	    	   FileConfiguration deityFile = dataHandler.getDeity(deity);
+	    	   FileConfiguration playerData = getPlayerData();
+	    	   int followerLevel = playerData.getInt(p.getName()+".followerLevel");
+	    	   if(!(followerLevel>=0)) followerLevel = 0;
 	    	   String chatColor=deityFile.getString(deity+".chatcolor");
-	    	   String followerNick = deityFile.getString(deity+".followers");
+	    	   String followerNick = deityFile.getString(deity+".followerLevel"+followerLevel);
 	           p.setDisplayName(ChatColor.WHITE+"["+ChatColor.valueOf(chatColor)+followerNick+ChatColor.WHITE+"] "+p.getDisplayName());
 	       }
     }
@@ -131,12 +135,12 @@ public final class EverydayMiracles extends JavaPlugin{
     
    
     public void displayCommands(CommandSender sender){
-    	//TODO: Replace with a call to /help EveryDayMiracles...somehow
+    	//TODO: Make this not terrible
     	sender.sendMessage("Use /help EveryDayMiracles for a list of commands");
     }
     
     public void displayCommandsA(CommandSender sender){
-    	//TODO: Replace with a call to /help EveryDayMiracles...somehow
+    	//TODO: Make this not terrible...but for admins.
     	sender.sendMessage("Use /help EveryDayMiracles for a list of commands");
     }
     
@@ -182,6 +186,8 @@ public final class EverydayMiracles extends JavaPlugin{
     
   //_____________________________________INNER CLASSES__________________________________\\
     
+    //Vault integration questionable, more testing needed, might just need to override the way the
+    //other guys do.
     private class RenameListener implements Listener {
         @EventHandler
        public void PlayerJoin(PlayerJoinEvent event) {

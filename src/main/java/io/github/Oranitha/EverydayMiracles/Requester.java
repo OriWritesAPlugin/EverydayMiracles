@@ -21,11 +21,13 @@ public final class Requester {
 	  ORE,
 	  CHICKEN,
 	  COW,
+	  PIG,
 	  SHEEP,
 	  WOLF,
 	  OCELOT,
 	  TREASURE,
-	  WRIT
+	  WRIT,
+	  RANKUP
   }
   
   public static boolean checkRequest(String string){
@@ -37,7 +39,7 @@ public final class Requester {
 	  }
   }
   
-  public static int requestCost(String string){
+  public static int requestCost(EverydayMiracles plugin, CommandSender sender, String string){
 	  try{
 		  Request request = Request.valueOf(string);
 		  switch(request) {
@@ -47,6 +49,8 @@ public final class Requester {
 			  return 200;
 		  case COW:
 			  return 500;
+		  case PIG:
+			  return 300;
 		  case SHEEP:
 			  return 300;
 		  case WOLF:
@@ -63,6 +67,19 @@ public final class Requester {
 			  return 30;
 		  case WRIT:
 			  return 50;
+		  case RANKUP:
+			  FileConfiguration playerData = plugin.getPlayerData();
+			  String name = sender.getName();
+			  int level = playerData.getInt(name+".followerLevel");
+			  switch(level){
+			  case 0:
+				  return 1500;
+			  case 1:
+				  return 3750;
+			  default:
+				  return -1;
+			  }
+				  
 		  default:
 			  return 0;
 		  }
@@ -75,12 +92,13 @@ public final class Requester {
 	  FileConfiguration playerData = plugin.getPlayerData();
 	  Player player = (Player) sender;
 	  String name = player.getName();
-	  int cost = requestCost(string);
+	  int cost = requestCost(plugin, sender, string);
 	  int balance = playerData.getInt(name+".points");
 	  DataHandler dh = plugin.getDataHandler();
-	  
 	  if(balance<cost){
 		  player.sendMessage("You don't have enough points!");
+	  } else if(cost < 0){
+		  player.sendMessage("You've already maxed out!");
 	  } else {
 		  int newPoints = playerData.getInt(name+".points")-cost;
 		  playerData.set(name+".points", newPoints);
@@ -105,6 +123,9 @@ public final class Requester {
 				  	world.spawnEntity(player.getLocation(), EntityType.CHICKEN);
 				  break;
 			  case COW:
+				  	world.spawnEntity(player.getLocation(), EntityType.COW);
+				  break;
+			  case PIG:
 				  	world.spawnEntity(player.getLocation(), EntityType.COW);
 				  break;
 			  case SHEEP:
@@ -142,7 +163,7 @@ public final class Requester {
 					  playerData.set(name+".lastHeal", currentTime);
 				  } else {
 					  player.sendMessage("You must play "+(lastTime+2400-currentTime)/20+" seconds before healing again!");
-					  int addedPoints = playerData.getInt(name+".points")+requestCost("HEAL");
+					  int addedPoints = playerData.getInt(name+".points")+requestCost(plugin, sender, "HEAL");
 					  playerData.set(name+".points", addedPoints);
 				  }
 				  plugin.savePlayerData();
@@ -165,6 +186,12 @@ public final class Requester {
 				  im.setLore(loreList);
 				  item.setItemMeta(im);
 				  world.dropItem(player.getLocation(), item);
+				  break;
+			  case RANKUP:
+				  playerData.set(name+".followerLevel", playerData.getInt(name+".followerLevel")+1);
+				  plugin.savePlayerData();
+				  player.sendMessage("Your deity recognizes your dedication! You have been granted a new title--relog to see it!");
+				  break;
 			  default:
 				  plugin.log("The plugin author did a bad. Faulty enum: "+string);
 				  break;

@@ -11,9 +11,13 @@ commands:
 
   edm follow:
     description: List available leaders
+    permission: everydaymiracles.worship
+    permission-message: You can’t use this command, you don't have the permission 
 
   edm follow [leader]:
     description: Follow specified leader
+    permission: everydaymiracles.worship
+    permission-message: You can’t use this command, you don't have the permission 
 
   edm quest:
     description: Receive a quest from your leader

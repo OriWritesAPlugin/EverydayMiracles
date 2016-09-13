@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeMap;
-
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -86,6 +84,11 @@ public final class Executor{
  	    //Check if no deity assigned
  	    if(deity == null){player.sendMessage("You have not yet chosen who to follow!"); return true;}
 		
+ 	    //Check if quest already assigned
+ 	    if(plugin.getPlayerData().getString(sender.getName()+".questDesc")!=null){
+ 	    	player.sendMessage("You already have a quest! Use /edm forfeit to abandon your current quest for 3% of your current points.");
+ 	    	return true;
+ 	    }
  	    FileConfiguration deityConfig = dh.getDeity(deity);
 		//try{
 			Map<String,Object> questList = deityConfig.getConfigurationSection(deity+".quests").getValues(false);
@@ -262,6 +265,22 @@ public final class Executor{
     	return true;
     }
 	
+	public static boolean forfeit(EverydayMiracles plugin, CommandSender sender, DataHandler dh){
+		//Check if not player
+ 	    if (!(sender instanceof Player)) {sender.sendMessage("The console never surrenders!"); return true;} 
+ 	    String deity = dh.getPlayerDeity(sender);
+ 	    //Check if no deity assigned
+ 	    if(deity == null){sender.sendMessage("You have not yet chosen who to follow!"); return true;}
+ 	    FileConfiguration playerData = plugin.getPlayerData();
+ 	    int points = playerData.getInt(sender.getName()+".points");
+ 	    int lostPoints = (int) (points*0.03);
+ 	    playerData.set(sender.getName()+".points", points-lostPoints);
+ 	    plugin.savePlayerData();
+ 	   resetQuestData(plugin, sender.getName());
+		sender.sendMessage("You have forfeited your current quest and lost "+lostPoints+" points.");
+		return true;
+	}
+	
 	public static boolean points(EverydayMiracles plugin, CommandSender sender){
 		if (!(sender instanceof Player)) {sender.sendMessage("The console is pointless. Wait..."); return true;}
 		sender.sendMessage("You have "+plugin.getPlayerData().getInt(sender.getName()+".points")+" points.");
@@ -300,9 +319,9 @@ public final class Executor{
 			for(String spell : spells){
 				spell = spell.toUpperCase();
 				if(Requester.checkRequest(spell)){
-					out.append(spell.toLowerCase()+ "("+Requester.requestCost(spell)+"), ");
+					out.append(spell.toLowerCase()+ "("+Requester.requestCost(plugin, sender, spell)+"), ");
 				} else {
-					plugin.log("Illegal spell! Only use the programmed ones, caps matter, please!");
+					plugin.log("You cannot make that request to your deity!");
 				}
 			}
 			sender.sendMessage(out.toString());
@@ -311,6 +330,7 @@ public final class Executor{
 	}
 	
 	public static boolean rankings(EverydayMiracles plugin, CommandSender sender, String[] args, DataHandler dh){
+		@SuppressWarnings("unchecked") //TODO How 2 assert
 		List<String> rankings = (List<String>) plugin.getConfig().get(".Rankings");
 		sender.sendMessage("-----------------------------------------------------");
 		StringBuilder currentRanking = new StringBuilder("Current ranking: ");
@@ -351,6 +371,7 @@ public final class Executor{
 			} else {
 				player.sendMessage("You have had "+addPoints+" points deducted!");
 			}
+			sender.sendMessage("Player "+args[1]+"given points: "+addPoints);
 		} else {plugin.displayCommandsA(sender);}
 		return true;
 	}
@@ -389,6 +410,20 @@ public final class Executor{
 		for(String deity:deities){
 			dh.deityPointsSet(deity, 0);
 		}
+		return true;
+	}
+	
+	public static boolean setIslands(EverydayMiracles plugin, CommandSender sender, String[] args, DataHandler dh){
+		if(args.length>3 && NumberUtils.isNumber(args[2]) && NumberUtils.isNumber(args[3])){
+			FileConfiguration playerdata = plugin.getPlayerData();
+			int newProtected = playerdata.getInt(args[1]+".protectedIslands")+Integer.parseInt(args[3]);
+			int newTotal = playerdata.getInt(args[1]+".totalIslands")+Integer.parseInt(args[3])+Integer.parseInt(args[2]);
+			playerdata.set(args[1]+".protectedIslands", newProtected);
+			playerdata.set(args[1]+".totalIslands", newTotal);
+			plugin.savePlayerData();
+			Player player = plugin.getServer().getPlayer(args[1]);
+			sender.sendMessage("Player "+args[1]+"island counts now protected: "+newProtected+", total: "+ newTotal);
+		} else {plugin.displayCommandsA(sender);}
 		return true;
 	}
 }
