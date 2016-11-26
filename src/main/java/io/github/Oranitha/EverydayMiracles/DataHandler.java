@@ -14,7 +14,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-//It's like a crappy DAO, except I haven't moved over all the methods yet.
+//It's like some kinda budget DAO, except I haven't moved over all the methods yet! Shame.
+
 public final class DataHandler {
 	
 	private static ArrayList<String> deities;
