@@ -126,7 +126,7 @@ public final class Requester {
 				  	world.spawnEntity(player.getLocation(), EntityType.COW);
 				  break;
 			  case PIG:
-				  	world.spawnEntity(player.getLocation(), EntityType.COW);
+				  	world.spawnEntity(player.getLocation(), EntityType.PIG);
 				  break;
 			  case SHEEP:
 				  	world.spawnEntity(player.getLocation(), EntityType.SHEEP);
@@ -181,7 +181,7 @@ public final class Requester {
 				  ItemMeta im = item.getItemMeta();
 				  im.setDisplayName(ChatColor.GOLD + "Writ of Honorable Service");
 				  ArrayList<String> loreList = new ArrayList<String>();
-				  loreList.add(ChatColor.DARK_AQUA + "Evidence of loyal service to the gods.");//This is the first line of lore
+				  loreList.add(ChatColor.DARK_AQUA + "Evidence of loyal service to the gods.");
 				  loreList.add(ChatColor.DARK_AQUA + "Worth 50 points.");
 				  im.setLore(loreList);
 				  item.setItemMeta(im);
